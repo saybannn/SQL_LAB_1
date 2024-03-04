@@ -1,0 +1,90 @@
+1. Проаналізувати приклад універсального відношення. Вирішити яка його колонка буде головним ключем, які поля обов'язкові для введення, які
+поля мають значення за замовчуванням, які поля мають область допустимих значень, які поля необхідно проіндексувати.
+
+	Поля в універсальному відношенні будуть містити назву латиницею та записані нижнім регістром. Головним ключем буде
+колонка з індексом, бо він є унікальним для кожної книги і автоінкрементується. Обов'язковими полями є (номер, код, чиНова, ім'я, сторінки, тема, категорія).
+За замовчуванням поле формат буде містити значення NULL, полем з областю допустимих значень є поле Тираж (до 5000 включно).
+
+2. Скласти SQL-script, який виконує:
+
+a. Видалення попередньої версії бази даних
+
+DROP DATABASE IF EXISTS DB;
+
+
+b. Створення бази даних
+
+CREATE DATABASE IF NOT EXISTS studybooks;
+
+
+c. Створення таблиці на основі універсального відношення. Команда для створення таблиці повинна містити головний ключ, обмеження
+типу null / not null, default, check. ЗВЕРНІТЬ УВАГУ!!! Усі поля повинні мати назви латиницею!
+
+USE studybooks;
+
+CREATE TABLE booksF (
+    number INT NOT NULL,
+    bookCode INT NOT NULL,
+    isNew VARCHAR(3) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    price VARCHAR(10),
+    publishing VARCHAR(50),
+    pages INT NOT NULL,
+    format VARCHAR(20) DEFAULT NULL,
+    bookDate VARCHAR(10),
+    circulation INT CHECK (circulation <= 5000),
+    theme VARCHAR(50) NOT NULL,
+    cathegory VARCHAR(30) NOT NULL,
+    indexing INT AUTO_INCREMENT PRIMARY KEY
+);
+
+
+d. Створення додаткового індексу.
+
+{...}
+indexing INT AUTO_INCREMENT PRIMARY KEY,
+{...}
+
+
+e. Завантаження даних в таблицю
+
+LOAD DATA INFILE 'DB_CSV.txt' INTO TABLE books1
+FIELDS TERMINATED BY ',' 
+LINES TERMINATED BY '\n'
+
+
+3. Скласти SQL-script, який виконує:
+
+a. Додавання в таблицю нового текстового поля "Автор", розміром 15 символів
+
+ALTER TABLE booksF
+ADD COLUMN author VARCHAR(15);
+
+
+b. Збільшення розміру текстового поля "Автор" до 20 символів
+
+ALTER TABLE booksF
+MODIFY COLUMN author VARCHAR(20);
+
+
+c. Видалення текстового поля "Автор" з таблиці
+
+ALTER TABLE booksF
+DROP COLUMN author;
+
+
+d. Зміна порядку сортування індексу і призначення його унікальності
+
+ALTER TABLE booksF
+
+Призначення унікальності:
+ADD CONSTRAINT unique_indexing UNIQUE (indexing);
+
+Запрос в таблицю з отриманням оберненого порядку індексів:
+SELECT * FROM booksF ORDER BY indexing DESC;
+
+e. Видалення індексу
+
+ALTER TABLE booksF
+DROP COLUMN indexing;
+
